@@ -1,65 +1,73 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { useState } from "react";
+import matter from "gray-matter";
+import Head from "next/head";
+import Link from "next/link";
+import Navigation from "../components/Navigation";
+import css from "../styles/Home.module.css";
 
-export default function Home() {
+export default function Home({ tags, data }) {
+  const [selectedTag, setSelectedTag] = useState("");
+
+  const realData = data.map((blog) => matter(blog));
+  const listItems = realData.map((listItem) => listItem.data);
+
   return (
-    <div className={styles.container}>
+    <div className={css.container}>
       <Head>
-        <title>Create Next App</title>
+        <title>Blog</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Navigation
+        tags={tags}
+        selectedTag={selectedTag}
+        setSelectedTag={setSelectedTag}
+      />
+      <h1>Blog Posts</h1>
+      <div className={css.content}>
+        {/* POSTS PREVIEW */}
+        <ul className={css.posts}>
+          {/* TODO: filter by selected tag */}
+          {listItems.map((blog, i) => (
+            <li key={i}>
+              <Link href={`/${blog.slug}`}>
+                <a>{blog.title}</a>
+              </Link>
+              <p>{blog.description}</p>
+              <p className={css.tags}>
+                {blog.tags.map((tag) => (
+                  <span key={tag}>#{tag}</span>
+                ))}
+              </p>
+            </li>
+          ))}
+        </ul>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+        {/* SUBSCRIBE */}
+      </div>
     </div>
-  )
+  );
+}
+
+export async function getStaticProps() {
+  const tags = ["code", "money", "life"];
+  const fs = require("fs");
+
+  const files = fs.readdirSync(`${process.cwd()}/content`, "utf-8");
+
+  const blogs = files.filter((f) => f.endsWith(".md"));
+
+  const data = blogs.map((blog) => {
+    const path = `${process.cwd()}/content/${blog}`;
+    const rawContent = fs.readFileSync(path, {
+      encoding: "utf-8",
+    });
+    return rawContent;
+  });
+
+  return {
+    props: {
+      tags,
+      data,
+    },
+  };
 }
