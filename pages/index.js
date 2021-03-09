@@ -11,6 +11,10 @@ export default function Home({ tags, data }) {
   const realData = data.map((blog) => matter(blog));
   const listItems = realData.map((listItem) => listItem.data);
 
+  function sortDateDescending(a, b) {
+    return new Date(b.date) - new Date(a.date);
+  }
+
   return (
     <div className={css.container}>
       <Head>
@@ -26,23 +30,30 @@ export default function Home({ tags, data }) {
       <div className={css.content}>
         {/* POSTS PREVIEW */}
         <ul className={css.posts}>
-          {/* TODO: filter by selected tag */}
-          {listItems.map((blog, i) => (
-            <li key={i}>
-              <Link href={`/${blog.slug}`}>
-                <a>{blog.title}</a>
-              </Link>
-              <p>{blog.description}</p>
-              <p className={css.tags}>
-                {blog.tags.map((tag) => (
-                  <span key={tag}>#{tag}</span>
-                ))}
-              </p>
-            </li>
-          ))}
+          {listItems
+            .sort((a, b) => sortDateDescending(a, b))
+            .filter((b) => b.tags.includes(selectedTag) || selectedTag === "")
+            .map((blog, i) => (
+              <li key={i}>
+                <div className={css.date}>
+                  <span style={{ marginLeft: "-16px" }}>📓</span> {blog.date}
+                </div>
+                <Link href={`/${blog.slug}`}>
+                  <a>{blog.title}</a>
+                </Link>
+                <p>{blog.description}</p>
+                <p className={css.tags}>
+                  {blog.tags.map((tag) => (
+                    <span key={tag}>#{tag}</span>
+                  ))}
+                </p>
+              </li>
+            ))}
         </ul>
 
         {/* SUBSCRIBE */}
+        {/*  AND Sort control? */}
+        {/*  Maybe the tags will eventually live here too. Who knows */}
       </div>
     </div>
   );

@@ -8,12 +8,15 @@
 
 .nav .title {
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .nav .title a {
   font-size: 2rem;
   cursor: pointer;
-  padding: 12px;
+  padding-left: 12px;
 }
 
 .links {
