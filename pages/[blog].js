@@ -21,6 +21,16 @@ export default function Blog({ content, data }) {
     <>
       <Head>
         <title>Zach Johnson | {frontmatter.title}</title>
+        <meta
+          name="description"
+          content={`Zach Johnson's, personal blog. ${frontmatter.description}`}
+        />
+        <meta name="robots" content="index, follow" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0"
+        ></meta>
+        <meta charset="UTF-8" />
       </Head>
       <Link href="/">
         <a className={css.topBack}>👈 Back Home</a>

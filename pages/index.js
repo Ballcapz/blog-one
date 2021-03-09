@@ -18,8 +18,18 @@ export default function Home({ tags, data }) {
   return (
     <div className={css.container}>
       <Head>
-        <title>Blog</title>
+        <title>Zach's Blog | My thoughts on life</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="description"
+          content="Zach Johnson, personal blog. Thoughts on life, code, software, and learning."
+        />
+        <meta name="robots" content="index, follow" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0"
+        ></meta>
+        <meta charset="UTF-8" />
       </Head>
       <Navigation
         tags={tags}
